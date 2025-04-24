@@ -7,42 +7,44 @@
 </head>
 <body>
     <h1>Google Books API</h1>
-    <ul id="book-list"></ul>
+    <ul id="books"></ul>
     <script>
-        var apiKey = 'AIzaSyAcbiLdU_vQLDlstAfgY6FCWjSzmeXFVAY';
-        var endpoint = 'https://www.googleapis.com/books/v1/volumes?q=';
-        var query = 'CSharp';
+        var key= 'AIzaSyAcbiLdU_vQLDlstAfgY6FCWjSzmeXFVAY';
+        var url = 'https://www.googleapis.com/books/v1/volumes?q=';
+        var search = 'javascript';
 
-        var xhr = new XMLHttpRequest();
+        var httpRequest = new XMLHttpRequest();
 
-        xhr.onreadystatechange = function() {
-            console.log(xhr.readyState);
-            console.log(xhr.responseText);
+        httpRequest.onreadystatechange = function() {
+            console.log(httpRequest.readyState);
+            console.log(httpRequest.responseText);
 
-            // Check if the request is complete
-            if(xhr.readyState === XMLHttpRequest.DONE) {
-                // Convert the response to a JSON object
-                var responseData = JSON.parse(xhr.responseText);
-                console.log(responseData.items);
-                // Get a reference to the list of books
-                var bookList = document.getElementById('book-list');
+            //if the request is finished loading
+            if(httpRequest.readyState === XMLHttpRequest.DONE)
+            {
+                //convert the string response to JSON object
+                var data = JSON.parse(httpRequest.responseText);
+                console.log(data.items);
+                //create a reference to the books UL
+                var books = document.getElementById('books');
                 
-                // Iterate over the books in the JSON response
-                for (var i = 0; i < responseData.items.length; i++) {
-                    // Extract the book's title
-                    var bookTitle = responseData.items[i].volumeInfo.title;
-                    console.log(bookTitle);
-                    var bookCover = responseData.items[i].volumeInfo.imageLinks.thumbnail;
-                    var bookLink = responseData.items[i].volumeInfo.infoLink;
-                    // Add the book to the list
-                    var bookItem = "<li>" + "<a href='" + bookLink + "'>" + bookTitle + "</a>" + "<br>" + "<img src='" + bookCover + "' alt='javascript' class='cover-img'>" + "</li>";
-                    bookList.innerHTML += bookItem;
+                //loop through the book from the JSON
+                for (var i = 0; i < data.items.length; i++) {
+                    //fetch title rom the next book
+                    var title = data.items[i].volumeInfo.title;
+                    console.log(title);
+                    var coverimage = data.items[i].volumeInfo.imageLinks.thumbnail;
+                    var link = data.items[i].volumeInfo.infoLink;
+                    //add book to UL
+                    var newBook = "<li>" + "<a href='" + link + "'>" + title + "</a>" + "<br>" + "<img src='" + coverimage + "' alt='javascript' id='coverimage'>" + "</li>";
+                    books.innerHTML += newBook;
                 }
+                
             }
         }
 
-        xhr.open('GET', endpoint + query);
-        xhr.send();
+        httpRequest.open('GET', url + search);
+        httpRequest.send();
 
     </script>
 </body>
