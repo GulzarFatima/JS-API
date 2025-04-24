@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Google Books API</h1>
+    <ul id="book-list"></ul>
+    <script>
+        var apiKey = 'AIzaSyAcbiLdU_vQLDlstAfgY6FCWjSzmeXFVAY';
+        var endpoint = 'https://www.googleapis.com/books/v1/volumes?q=';
+        var query = 'CSharp';
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+            console.log(xhr.readyState);
+            console.log(xhr.responseText);
+
+            // Check if the request is complete
+            if(xhr.readyState === XMLHttpRequest.DONE) {
+                // Convert the response to a JSON object
+                var responseData = JSON.parse(xhr.responseText);
+                console.log(responseData.items);
+                // Get a reference to the list of books
+                var bookList = document.getElementById('book-list');
+                
+                // Iterate over the books in the JSON response
+                for (var i = 0; i < responseData.items.length; i++) {
+                    // Extract the book's title
+                    var bookTitle = responseData.items[i].volumeInfo.title;
+                    console.log(bookTitle);
+                    var bookCover = responseData.items[i].volumeInfo.imageLinks.thumbnail;
+                    var bookLink = responseData.items[i].volumeInfo.infoLink;
+                    // Add the book to the list
+                    var bookItem = "<li>" + "<a href='" + bookLink + "'>" + bookTitle + "</a>" + "<br>" + "<img src='" + bookCover + "' alt='javascript' class='cover-img'>" + "</li>";
+                    bookList.innerHTML += bookItem;
+                }
+            }
+        }
+
+        xhr.open('GET', endpoint + query);
+        xhr.send();
+
+    </script>
+</body>
+</html>
