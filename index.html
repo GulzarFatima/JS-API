@@ -3,49 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Google Books API</title>
 </head>
 <body>
+    
     <h1>Google Books API</h1>
-    <ul id="books"></ul>
-    <script>
-        var key= 'AIzaSyAcbiLdU_vQLDlstAfgY6FCWjSzmeXFVAY';
-        var url = 'https://www.googleapis.com/books/v1/volumes?q=';
-        var search = 'javascript';
 
+    <!-- List where books will show up -->
+    <ul id="books"></ul>
+
+    <script>
+        // Google Books API key
+        var key = 'AIzaSyAcbiLdU_vQLDlstAfgY6FCWjSzmeXFVAY';
+
+        // URL to call Google Books API
+        var url = 'https://www.googleapis.com/books/v1/volumes?q=';
+
+        // Search term for the API (like "dragons")
+        var search = 'dragons'; 
+
+        // Create a new XMLHttpRequest object to make the request
         var httpRequest = new XMLHttpRequest();
 
+        // When the request state changes
         httpRequest.onreadystatechange = function() {
+            // Log the current state and response for debugging
             console.log(httpRequest.readyState);
             console.log(httpRequest.responseText);
 
-            //if the request is finished loading
-            if(httpRequest.readyState === XMLHttpRequest.DONE)
-            {
-                //convert the string response to JSON object
+            // If request is done and the status is 200 (OK)
+            if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status === 200) {
+                // Parse the JSON data from the response
                 var data = JSON.parse(httpRequest.responseText);
-                console.log(data.items);
-                //create a reference to the books UL
-                var books = document.getElementById('books');
-                
-                //loop through the book from the JSON
+                var books = document.getElementById("books");
+
+                // Loop through the book data and add it to the page
                 for (var i = 0; i < data.items.length; i++) {
-                    //fetch title rom the next book
-                    var title = data.items[i].volumeInfo.title;
-                    console.log(title);
-                    var coverimage = data.items[i].volumeInfo.imageLinks.thumbnail;
-                    var link = data.items[i].volumeInfo.infoLink;
-                    //add book to UL
-                    var newBook = "<li>" + "<a href='" + link + "'>" + title + "</a>" + "<br>" + "<img src='" + coverimage + "' alt='javascript' id='coverimage'>" + "</li>";
+                    var title = data.items[i].volumeInfo.title;  // Get the book title
+                    var link = data.items[i].volumeInfo.infoLink; // Get the book link
+                    var image = data.items[i].volumeInfo.imageLinks?.smallThumbnail; // Get the book image (if available)
+
+                    // Create HTML for each book
+                    var newBook = "<li><a href='" + link + "' target='_blank'>" + 
+                                  "<img src='" + image + "' alt='" + title + "' style='vertical-align: middle; width: 80px; margin-right: 10px;'>" + 
+                                  title + "</a></li>";
+
+                    // Add the new book to the list
                     books.innerHTML += newBook;
                 }
-                
             }
-        }
+        };
 
-        httpRequest.open('GET', url + search);
+        // Open the request with the search term and API key
+        httpRequest.open("GET", url + search + "&key=" + key);
+
+        // Send the request
         httpRequest.send();
-
     </script>
+
 </body>
 </html>
